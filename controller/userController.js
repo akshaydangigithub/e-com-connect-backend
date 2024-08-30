@@ -205,9 +205,16 @@ export const cancelOrder = async (req, res) => {
     if (!user) return errorResponse(res, "User not found", 404);
     if (!product) return errorResponse(res, "Product not found", 404);
 
+    const order = await Order.findOne({ product: productId, user: userId });
+
+    if (!order) return errorResponse(res, "Order not found", 404);
+
+    order.status = "Cancelled";
+
     user.orders.pop(product._id);
 
     await user.save();
+    await order.save();
 
     return successResponse(res, "Order cancel successfully !", null, 200);
   } catch (error) {

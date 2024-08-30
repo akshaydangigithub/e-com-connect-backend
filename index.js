@@ -7,7 +7,6 @@ dotenv.config();
 
 const PORT = process.env.PORT;
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -18,14 +17,14 @@ app.use(fileUpload());
 import indexRoutes from "./routes/indexRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 app.use("/", indexRoutes);
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
-
+app.use("/contact", contactRoutes);
 
 // ================================ Routes End ============================
-
 
 ConnectDb(process.env.MONGO_URL);
 

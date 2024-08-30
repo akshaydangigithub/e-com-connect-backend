@@ -1,5 +1,7 @@
 import { errorResponse, successResponse } from "../middlewares/responses.js";
 import Admin from "../models/adminModel.js";
+import Order from "../models/orderModel.js";
+import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Product from "../models/productModel.js";
@@ -312,6 +314,63 @@ export const deleteProduct = async (req, res) => {
     await product.deleteOne();
 
     return successResponse(res, "Product deleted successfully", null, 200);
+  } catch (error) {
+    return errorResponse(res, "Internal server error", 500, error);
+  }
+};
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+
+    if (!users || users.length === 0) {
+      return errorResponse(res, "No users found", 404);
+    }
+
+    return successResponse(res, "Users found successfully", users, 200);
+  } catch (error) {
+    return errorResponse(res, "Internal server error", 500, error);
+  }
+};
+
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find().populate("product").populate("user");
+
+    if (!orders || orders.length === 0) {
+      return errorResponse(res, "No orders found", 404);
+    }
+
+    return successResponse(res, "Orders found successfully", orders, 200);
+  } catch (error) {
+    return errorResponse(res, "Internal server error", 500, error);
+  }
+};
+
+export const cancelOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return errorResponse(res, "Order not found", 404);
+    }
+
+    const user = await User.findById(order.user);
+
+    if (!user) {
+      return errorResponse(res, "User not found", 404);
+    }
+
+    order.status = "Cancelled";
+
+    user.orders.pop(order.product);
+
+    await order.save();
+    await user.save();
+
+    return successResponse(res, "Order cancelled successfully", null, 200);
   } catch (error) {
     return errorResponse(res, "Internal server error", 500, error);
   }

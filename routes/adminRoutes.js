@@ -7,6 +7,9 @@ import {
   readSingleProduct,
   updateProduct,
   deleteProduct,
+  getAllUsers,
+  getAllOrders,
+  cancelOrder
 } from "../controller/adminController.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
 
@@ -33,5 +36,11 @@ router.put("/product/update/:productId", isAdmin, updateProduct);
 
 // delete product
 router.delete("/product/delete/:productId", isAdmin, deleteProduct);
+
+router.get("/getAllUsers", isAdmin, getAllUsers);
+
+router.get("/getAllOrders", isAdmin, getAllOrders);
+
+router.post("/cancelOrder/:orderId", isAdmin, cancelOrder);
 
 export default router;
