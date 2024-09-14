@@ -9,7 +9,8 @@ import {
   deleteProduct,
   getAllUsers,
   getAllOrders,
-  cancelOrder
+  cancelOrder,
+  validateToken
 } from "../controller/adminController.js";
 import { isAdmin } from "../middlewares/isAdmin.js";
 
@@ -42,5 +43,7 @@ router.get("/getAllUsers", isAdmin, getAllUsers);
 router.get("/getAllOrders", isAdmin, getAllOrders);
 
 router.post("/cancelOrder/:orderId", isAdmin, cancelOrder);
+
+router.post("/validateToken", validateToken)
 
 export default router;

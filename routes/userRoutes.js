@@ -7,6 +7,7 @@ import {
   removeFromCart,
   cancelOrder,
   orderProduct,
+  validateUserToken,
 } from "../controller/userController.js";
 
 const router = express.Router();
@@ -28,5 +29,7 @@ router.post("/remove-from-cart/:userId/:productId", removeFromCart);
 router.post("/order/:userId/:productId", orderProduct);
 
 router.post("/cancel-order/:userId/:productId", cancelOrder);
+
+router.post("/validateToken", validateUserToken);
 
 export default router;

@@ -79,6 +79,7 @@ export const adminLogin = async (req, res) => {
       success: true,
       message: "Admin loggedIn successfully !",
       token,
+      admin,
     });
   } catch (error) {
     return errorResponse(res, "Internal server error", 500, error);
@@ -373,5 +374,45 @@ export const cancelOrder = async (req, res) => {
     return successResponse(res, "Order cancelled successfully", null, 200);
   } catch (error) {
     return errorResponse(res, "Internal server error", 500, error);
+  }
+};
+
+export const validateToken = async (req, res) => {
+  try {
+    var authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      return res.status(400).json({
+        success: false,
+        message: "Authorization required !",
+      });
+    }
+
+    var token = authHeader.split(" ")[1];
+    const decode = jwt.verify(token, process.env.JWT_SECRET);
+
+    if (!decode) {
+      return res.status(400).json({
+        success: false,
+        message: "Authorization failed !",
+      });
+    } else {
+      const admin = await Admin.findById(decode.id);
+
+      if (!admin) {
+        return res.status(400).json({
+          success: false,
+          message: "Authorization failed !",
+        });
+      } else {
+        return res.status(200).json({
+          success: true,
+          message: "Your token is correct",
+          admin,
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
